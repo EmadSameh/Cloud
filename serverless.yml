@@ -7,7 +7,7 @@
 # The `service` block is the name of the service
 service: cloud
 
-frameworkVersion: '3'
+frameworkVersion: "3"
 
 # The `provider` block defines where your service will be deployed
 provider:
@@ -16,11 +16,11 @@ provider:
 
 # The `functions` block defines what code to deploy
 functions:
-  helloWorld:
-    handler: handler.helloWorld
-    # The `events` block defines how to trigger the handler.helloWorld code
+  save:
+    handler: handler.save
     events:
-      - http:
-          path: hello-world
-          method: get
-          cors: true
+      - sqs:
+        arn: arn:aws:sqs:eu-central-1:587877384053:CDproject.fifo
+        batchSize: 10
+        maximumBatchingWindow: 60
+        functionResponseType: ReportBatchItemFailures

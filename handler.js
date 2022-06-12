@@ -1,16 +1,14 @@
 'use strict';
 
-module.exports.helloWorld = (event, context, callback) => {
-  const response = {
-    statusCode: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*', // Required for CORS support to work
-    },
-    body: JSON.stringify({
-      message: 'Go Serverless v1.0! Your function executed successfully!',
-      input: event,
-    }),
-  };
+const { mongoClient } = require('./database')
 
-  callback(null, response);
+module.exports.save = (event,context) => {
+  const db = await mongoClient();
+  if (!db) res.status(500).send('Mongo DB Unavailable');
+  await db.collection('Log').insertOne(context);
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify(context),
+  };
 };
