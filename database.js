@@ -1,29 +1,28 @@
-import { MongoClient } from "mongodb";
+const { MongoClient } = require("mongodb");
+const util = require("util");
 
-const mongoclient = require("mongodb").mongoclient;
-let cacheddb = null;
+util.promisify(MongoClient.connect);
 
-const connectToDatabase = async () => {
-  if (cacheddb) {
-    console.log("Use existing connection");
-    return Promise.resolve(cacheddb);
-  } else {
-    return MongoClient.connect(
+let dbConnection;
+
+const connect = async () => {
+  try {
+    const client = await MongoClient.connect(
       "mongodb+srv://admin:admin@cache.bysf2.mongodb.net/?retryWrites=true&w=majority"
-    )
-      .then((client) => {
-        let db = client.db("cache");
-        console.log("new database connection");
-        cacheddb = db;
-        return cacheddb;
-      })
-      .catch((err) => {
-        console.log("connection error");
-        console.log(err);
-      });
+    );
+    dbConnection = client.db("Log");
+  } catch (e) {
+    throw new Error(`Could not establish database connection: ${e}`);
   }
 };
 
+const mongoClient = async () => {
+  if (!dbConnection) {
+    await connect();
+  }
+  return dbConnection;
+};
+
 module.exports = {
-  cacheddb,
+  mongoClient,
 };

@@ -1,26 +1,28 @@
-# Welcome to serverless. Read the docs
-# https://serverless.com/framework/docs/
+service: log2
 
-# Serverless.yml is the configuration the CLI
-# uses to deploy your code to your provider of choice
+custom:
+  config: ${file(config/${opt:stage, 'dev'}.yml)}
 
-# The `service` block is the name of the service
-service: cloud
-
-frameworkVersion: "3"
-
-# The `provider` block defines where your service will be deployed
 provider:
   name: aws
   runtime: nodejs12.x
+  region: eu-central-1
 
-# The `functions` block defines what code to deploy
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "sqs:ReceiveMessage"
+        - "sqs:DeleteMessage"
+      Resource: "arn:aws:sqs:eu-central-1:587877384053:CDproject.fifo"
+
+  environment:
+    ENV: ${self:custom.config.ENV}
+
 functions:
-  save:
+  processOrder:
     handler: handler.save
+    # Setup Lambda Trigger
     events:
       - sqs:
-        arn: arn:aws:sqs:eu-central-1:587877384053:CDproject.fifo
-        batchSize: 10
-        maximumBatchingWindow: 60
-        functionResponseType: ReportBatchItemFailures
+          arn: "arn:aws:sqs:eu-central-1:587877384053:CDproject.fifo"
+          batchSize: 1

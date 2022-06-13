@@ -13,7 +13,7 @@ app.post("/subscribe", (req, res) => {
   let params = {
     Protocol: "SQS",
     TopicArn: "arn:aws:sns:us-east-1:587877384053:MyTopic.fifo",
-    Endpoint: "arn:aws:sqs:eu-central-1:587877384053:CDproject.fifo",
+    Endpoint: "arn:aws:sqs:us-east-1:587877384053:CDproject.fifo",
   };
 
   sns.subscribe(params, (err, data) => {
