@@ -2,4 +2,4 @@
 ENV: dev
 
 # SQS QUEUES
-SQS_NEW_ORDER_ARN: arn:aws:sqs:us-east-1:248678306276:scc_lecture_8
+SQS_NEW_ORDER_ARN: arn:aws:sqs:eu-central-1:587877384053:myQ2

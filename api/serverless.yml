@@ -1,0 +1,14 @@
+service: publish
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+
+functions:
+  publish:
+    handler: handler.publish
+    events:
+      - http:
+          method: post
+          path: publish

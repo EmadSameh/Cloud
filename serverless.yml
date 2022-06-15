@@ -1,4 +1,4 @@
-service: log2
+service: saveDB
 
 custom:
   config: ${file(config/${opt:stage, 'dev'}.yml)}
@@ -13,7 +13,7 @@ provider:
       Action:
         - "sqs:ReceiveMessage"
         - "sqs:DeleteMessage"
-      Resource: "arn:aws:sqs:eu-central-1:587877384053:CDproject.fifo"
+      Resource: ${self:custom.config.SQS_NEW_ORDER_ARN}
 
   environment:
     ENV: ${self:custom.config.ENV}
@@ -24,5 +24,5 @@ functions:
     # Setup Lambda Trigger
     events:
       - sqs:
-          arn: "arn:aws:sqs:eu-central-1:587877384053:CDproject.fifo"
-          batchSize: 1
+          arn: ${self:custom.config.SQS_NEW_ORDER_ARN}
+          batchSize: 10

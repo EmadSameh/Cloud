@@ -9,11 +9,12 @@ app.use(bodyParser.json());
 
 const sns = new AWS.SNS();
 
+//establish connection between sns and sqs
 app.post("/subscribe", (req, res) => {
   let params = {
     Protocol: "SQS",
-    TopicArn: "arn:aws:sns:us-east-1:587877384053:MyTopic.fifo",
-    Endpoint: "arn:aws:sqs:us-east-1:587877384053:CDproject.fifo",
+    TopicArn: "arn:aws:sns:us-east-1:587877384053:myTopic2",
+    Endpoint: "arn:aws:sqs:eu-central-1:587877384053:myQ2",
   };
 
   sns.subscribe(params, (err, data) => {
@@ -26,21 +27,20 @@ app.post("/subscribe", (req, res) => {
   });
 });
 
+//send to sns
 app.post("/publish", (req, res) => {
   let params = {
     Message: req.body.message,
-    TopicArn: "arn:aws:sns:us-east-1:587877384053:MyTopic.fifo",
-    MessageGroupId: "UserMessages",
+    TopicArn: "arn:aws:sns:us-east-1:587877384053:myTopic2",
   };
-
   sns.publish(params, function (err, data) {
     if (err) console.log(err, err.stack);
     else console.log(data);
   });
-});
-
-app.get("/index", (req, res) => {
-  res.send("Welcome to NodeShop Orders.");
+  return {
+    statusCode: 200,
+    message: "successfully processed message",
+  };
 });
 
 console.log(`Orders service listening on port ${port}`);
