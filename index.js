@@ -26,22 +26,3 @@ app.post("/subscribe", (req, res) => {
     }
   });
 });
-
-//send to sns
-app.post("/publish", (req, res) => {
-  let params = {
-    Message: req.body.message,
-    TopicArn: "arn:aws:sns:us-east-1:587877384053:myTopic2",
-  };
-  sns.publish(params, function (err, data) {
-    if (err) console.log(err, err.stack);
-    else console.log(data);
-  });
-  return {
-    statusCode: 200,
-    message: "successfully processed message",
-  };
-});
-
-console.log(`Orders service listening on port ${port}`);
-app.listen(port);

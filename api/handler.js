@@ -4,6 +4,7 @@ var AWS = require("aws-sdk");
 AWS.config.update({ region: "us-east-1" });
 const sns = new AWS.SNS();
 
+//a serverless api that publishes messages to an sns
 module.exports.publish = async (event) => {
   const params = {
     Message: event.body,

@@ -5,6 +5,7 @@ var AWS = require("aws-sdk");
 AWS.config.update({ region: "us-east-1" });
 const sns = new AWS.SNS();
 
+//A lambda function that writes messages recieved by an sqs into a database
 module.exports.save = async (event) => {
   const db = await mongoClient();
 
@@ -12,7 +13,6 @@ module.exports.save = async (event) => {
     console.log("body :>> ", body);
     try {
       const data = JSON.parse(body);
-      // SNS events will contain "Message" field, otherwise message be in event.body
       const message = JSON.parse(data.Message || body);
       await db.collection("Log").insertOne(message);
     } catch (e) {
